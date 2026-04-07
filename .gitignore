@@ -1,3 +1,4 @@
 api-da-ia/.env
 api-da-ia/apiMoara.py
 api-da-ia/__pycache__/
+.gitignore
