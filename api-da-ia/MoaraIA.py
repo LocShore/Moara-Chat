@@ -135,4 +135,8 @@ class MoaraIA:
         except Exception as e:
             return f"Erro ao processar resposta: {str(e)}"
         
-    
+
+
+
+
+# eu sou gay -- Lucas Cândido
