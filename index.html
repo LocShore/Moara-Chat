@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moara</title>
 
-    <!-- Fonte com personalidade: Cinzel para o header (místico/antigo), Nunito para o chat (legível) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600&family=Nunito:wght@300;400;600&display=swap" rel="stylesheet">
 
@@ -24,6 +23,15 @@
             --text-principal: #d4ffe8;
             --text-muted:    rgba(181, 255, 214, 0.45);
             --borda:         rgba(0, 114, 50, 0.3);
+
+            /* Cores Stampdown adaptadas para o tema dark/nature */
+            --sd-amber:      #c88a2a;
+            --sd-amber-light:#ffd180;
+            --sd-blue-light: #85b7eb;
+            --sd-green-light:#a5d68b;
+            --sd-pink-light: #ffb8d6;
+            --sd-red-light:  #ffb3b3;
+            --sd-purple-light:#dcb8ff;
         }
 
         /* ===== RESET E BASE ===== */
@@ -58,7 +66,6 @@
             flex-shrink: 0;
         }
 
-        /* olho/ícone da Moara */
         .header-icon {
             width: 36px;
             height: 36px;
@@ -108,7 +115,6 @@
             scroll-behavior: smooth;
         }
 
-        /* scrollbar personalizada */
         #chat-container::-webkit-scrollbar { width: 4px; }
         #chat-container::-webkit-scrollbar-track { background: transparent; }
         #chat-container::-webkit-scrollbar-thumb {
@@ -116,10 +122,9 @@
             border-radius: 4px;
         }
 
-        /* mensagem genérica */
         .mensagem {
             display: flex;
-            max-width: 78%;
+            max-width: 85%;
             animation: entrarMensagem 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
         }
 
@@ -128,13 +133,9 @@
             to   { opacity: 1; transform: translateY(0)   scale(1); }
         }
 
-        /* IA à esquerda */
         .mensagem.ia { align-self: flex-start; }
-
-        /* usuário à direita */
         .mensagem.usuario { align-self: flex-end; flex-direction: row-reverse; }
 
-        /* avatar da IA */
         .avatar {
             width: 32px;
             height: 32px;
@@ -146,12 +147,11 @@
             align-self: flex-end;
         }
 
-        /* balão de fala */
         .balao {
-            padding: 12px 16px;
+            padding: 12px 18px;
             border-radius: 18px;
             line-height: 1.6;
-            font-size: 0.92rem;
+            font-size: 0.95rem;
             font-weight: 400;
             word-break: break-word;
         }
@@ -170,7 +170,6 @@
             color: #ffffff;
         }
 
-        /* timestamp */
         .timestamp {
             font-size: 0.68rem;
             color: var(--text-muted);
@@ -181,7 +180,6 @@
 
         .mensagem.ia .timestamp { margin-left: 40px; }
 
-        /* indicador de digitação (três pontinhos) */
         .digitando .balao {
             display: flex;
             align-items: center;
@@ -206,7 +204,6 @@
             30%           { transform: translateY(-6px); opacity: 1; }
         }
 
-        /* mensagem de sistema/erro */
         .msg-sistema {
             align-self: center;
             font-size: 0.78rem;
@@ -218,7 +215,7 @@
             border: 1px solid var(--borda);
         }
 
-        /* ===== ÁREA DE INPUT ===== */
+        /* ===== ÁREA DE INPUT (Syntax Highlighter Overlay) ===== */
         footer {
             padding: 14px 16px;
             border-top: 1px solid var(--borda);
@@ -243,25 +240,54 @@
             box-shadow: 0 0 0 3px var(--verde-muted);
         }
 
-        #input-user {
+        .editor-container {
+            position: relative;
             flex: 1;
-            background: transparent;
-            border: none;
-            outline: none;
-            color: var(--text-principal);
-            font-family: 'Nunito', sans-serif;
-            font-size: 0.9rem;
-            font-weight: 300;
-            resize: none;
-            max-height: 120px;
-            min-height: 26px;
-            line-height: 1.5;
-
-            /* textarea auto-cresce via JS */
-            overflow-y: hidden;
+            display: flex;
         }
 
-        #input-user::placeholder { color: var(--text-muted); }
+        /* Textarea (invisível, gerencia input e rolagem) e Highligher (visível, mostra cores) */
+        #input-user, #highlight-layer {
+            font-family: 'Nunito', sans-serif;
+            font-size: 0.95rem;
+            font-weight: 300;
+            line-height: 1.5;
+            padding: 0;
+            margin: 0;
+            border: none;
+            width: 100%;
+            white-space: pre-wrap;
+            word-break: break-word;
+            overflow-wrap: break-word;
+            min-height: 26px;
+            max-height: 150px;
+            overflow-y: auto;
+        }
+
+        #input-user {
+            position: relative;
+            z-index: 2;
+            background: transparent;
+            color: transparent; 
+            caret-color: var(--text-principal);
+            outline: none;
+            resize: none;
+        }
+
+        #highlight-layer {
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            color: var(--text-principal);
+            pointer-events: none;
+        }
+
+        /* Sync Scrollbars */
+        #input-user::-webkit-scrollbar { width: 4px; }
+        #input-user::-webkit-scrollbar-track { background: transparent; }
+        #input-user::-webkit-scrollbar-thumb { background: var(--verde-base); border-radius: 4px; }
+        #highlight-layer::-webkit-scrollbar { width: 4px; display: none; }
 
         #btn-enviar {
             width: 40px;
@@ -286,8 +312,6 @@
 
         #btn-enviar:active  { transform: scale(0.95); }
         #btn-enviar:disabled { background: #1a3326; cursor: not-allowed; transform: none; }
-
-        /* ícone de envio (seta) */
         #btn-enviar svg { width: 18px; height: 18px; }
 
         .hint {
@@ -296,66 +320,294 @@
             text-align: center;
             margin-top: 6px;
         }
+
+        /* ===== ESTILOS DO MOTOR STAMPDOWN (OUTPUT / BALÕES) ===== */
+        .sd-content p { margin: 0.4em 0; }
+        .sd-content h1, .sd-content h2, .sd-content h3, .sd-content h4, .sd-content h5, .sd-content h6 { margin: 0.8em 0 0.3em 0; font-weight: 600; }
+        .sd-content h1 { font-size: 1.4em; }
+        .sd-content h2 { font-size: 1.2em; }
+        
+        /* Cabeçalhos */
+        .sd-content .sd-h0 { font-family: 'Cinzel', serif; font-size: 1.6rem; border-bottom: 1px solid var(--sd-amber); padding-bottom: 0.1em; color: var(--sd-amber); margin: 0.4em 0; }
+        .sd-content .sd-h7 { font-size: 0.8em; font-weight: 600; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+        .sd-content .sd-h8 { font-size: 0.7em; font-weight: 600; color: var(--text-muted); text-transform: uppercase; opacity: 0.7; }
+        
+        /* Blocos Básicos */
+        .sd-content ul, .sd-content ol { padding-left: 1.5em; margin: 0.5em 0; }
+        .sd-content li { margin: 0.2em 0; }
+        .sd-content blockquote { border-left: 3px solid var(--verde-base); padding-left: 12px; margin: 0.6em 0; color: var(--text-muted); font-style: italic; background: rgba(0, 114, 50, 0.05); border-radius: 0 4px 4px 0; }
+        .sd-content hr { border: none; border-top: 1px solid var(--borda); margin: 1em 0; }
+        .sd-content code { font-family: monospace; font-size: 0.9em; background: rgba(0,0,0,0.3); color: var(--sd-amber-light); padding: 2px 5px; border-radius: 4px; }
+        .sd-content pre { background: rgba(0,0,0,0.4); border: 1px solid var(--borda); border-radius: 6px; padding: 12px; overflow-x: auto; margin: 0.6em 0; }
+        .sd-content pre code { background: transparent; padding: 0; color: #e8e4d9; }
+        .sd-content table { border-collapse: collapse; width: 100%; margin: 0.8em 0; font-size: 0.9em; }
+        .sd-content th, .sd-content td { border: 1px solid var(--borda); padding: 8px 12px; text-align: left; }
+        .sd-content th { background: rgba(0, 114, 50, 0.15); font-weight: 600; color: var(--verde-claro); }
+        
+        /* Elementos Semânticos Inline */
+        .sd-content .sd-ul { text-decoration: underline; }
+        .sd-content .sd-dot { text-decoration: underline dotted 2px; }
+        .sd-content .sd-hi { font-weight: 600; background: rgba(200, 138, 42, 0.2); color: var(--sd-amber-light); border-radius: 3px; padding: 0 4px; }
+        .sd-content .sd-lo { color: var(--text-muted); font-size: 0.9em; }
+        .sd-content .sd-ctx { font-size: 0.8em; color: var(--sd-blue-light); background: rgba(58, 122, 181, 0.15); border: 1px solid rgba(58, 122, 181, 0.3); border-radius: 4px; padding: 1px 6px; margin: 0 2px; font-style: italic; }
+        .sd-content .sd-tag { font-size: 0.75em; border-radius: 3px; padding: 1px 6px; margin-right: 4px; font-weight: 600; text-transform: uppercase; font-family: monospace; }
+        .sd-content .t-def { background: rgba(122, 74, 181, 0.15); color: var(--sd-purple-light); border: 1px solid rgba(122, 74, 181, 0.3); }
+        .sd-content .t-ex { background: rgba(74, 138, 58, 0.15); color: var(--sd-green-light); border: 1px solid rgba(74, 138, 58, 0.3); }
+        .sd-content .t-hyp { background: rgba(196, 74, 122, 0.15); color: var(--sd-pink-light); border: 1px solid rgba(196, 74, 122, 0.3); }
+        .sd-content .sd-body { font-style: italic; color: #fff; }
+        .sd-content .sd-doubt { background: rgba(181, 58, 58, 0.15); border: 1px solid rgba(181, 58, 58, 0.3); border-radius: 4px; padding: 0 5px; color: var(--sd-red-light); }
+        .sd-content .sd-doubt::before { content:"? "; font-size: 0.8em; opacity: 0.7; }
+        .sd-content .sd-doubt::after { content:" ?"; font-size: 0.8em; opacity: 0.7; }
+        .sd-content .sd-rev { background: rgba(200, 138, 42, 0.1); border-bottom: 1.5px dashed var(--sd-amber); color: var(--sd-amber-light); padding: 0 2px; }
+        .sd-content .sd-rev::before { content:"[rev] "; font-size: 0.8em; font-weight: 600; color: var(--sd-amber); }
+        .sd-content .sd-note { background: rgba(255, 255, 255, 0.05); border: 1px dashed rgba(255, 255, 255, 0.2); border-radius: 4px; padding: 2px 7px; font-size: 0.85em; color: var(--text-muted); font-style: italic; }
+        .sd-content .sd-comment { display: none; }
+        .sd-content a { color: var(--sd-amber-light); text-decoration: none; border-bottom: 1px solid rgba(255, 209, 128, 0.4); }
+        .sd-content a:hover { background: rgba(255, 209, 128, 0.1); }
+        .sd-content img { max-width: 100%; border-radius: 6px; }
+
+        /* ===== ESTILOS DO MOTOR STAMPDOWN (INPUT / OVERLAY) ===== */
+        /* O overlay não altera margin/padding/font-size para garantir alinhamento perfeito com o cursor */
+        .input-highlight .sd-hi { font-weight: 600; background: rgba(200, 138, 42, 0.2); color: var(--sd-amber-light); border-radius: 3px; }
+        .input-highlight .sd-lo { color: var(--text-muted); opacity: 0.8; }
+        .input-highlight .sd-ctx { color: var(--sd-blue-light); background: rgba(58, 122, 181, 0.15); border-radius: 4px; font-style: italic; }
+        .input-highlight .sd-tag { border-radius: 3px; font-weight: 600; text-transform: uppercase; font-family: monospace; }
+        .input-highlight .t-def { background: rgba(122, 74, 181, 0.15); color: var(--sd-purple-light); }
+        .input-highlight .t-ex { background: rgba(74, 138, 58, 0.15); color: var(--sd-green-light); }
+        .input-highlight .t-hyp { background: rgba(196, 74, 122, 0.15); color: var(--sd-pink-light); }
+        .input-highlight .sd-doubt { background: rgba(181, 58, 58, 0.15); color: var(--sd-red-light); border-radius: 4px; }
+        .input-highlight .sd-rev { background: rgba(200, 138, 42, 0.1); color: var(--sd-amber-light); text-decoration: underline dashed var(--sd-amber); }
+        .input-highlight .sd-comment { opacity: 0.3; }
+        .input-highlight .sd-note { background: rgba(255, 255, 255, 0.05); color: var(--text-muted); font-style: italic; border-radius: 4px; }
+        .input-highlight .sd-h0 { color: var(--sd-amber); font-weight: 600; text-decoration: underline; font-family: 'Cinzel', serif; }
+        .input-highlight .sd-h7, .input-highlight .sd-h8 { color: var(--text-muted); text-transform: uppercase; font-weight: 600; }
+        .input-highlight .sd-ul { text-decoration: underline; }
+        .input-highlight .sd-dot { text-decoration: underline dotted; }
+        .input-highlight code, .input-highlight .sd-code-block { background: rgba(0,0,0,0.4); color: var(--sd-amber-light); border-radius: 4px; font-family: monospace; }
+        .input-highlight .sd-blockquote { color: var(--text-muted); font-style: italic; background: rgba(0, 114, 50, 0.15); display: inline-block; width: 100%; }
     </style>
 </head>
 
 <body>
 
-    <!-- HEADER -->
     <header>
         <div class="header-icon"></div>
         <h1>MOARA</h1>
         <div class="status-dot"></div>
     </header>
 
-    <!-- CHAT -->
     <div id="chat-container" aria-live="polite" aria-label="Conversa com Moara"></div>
 
-    <!-- INPUT -->
     <footer>
         <div class="input-wrapper">
-            <!-- textarea cresce com o conteúdo -->
-            <textarea
-                id="input-user"
-                rows="1"
-                placeholder="Escreva para Moara..."
-                aria-label="Mensagem para Moara"
-            ></textarea>
+            <div class="editor-container">
+                <div id="highlight-layer" class="input-highlight" aria-hidden="true">
+                    <span style="color: var(--text-muted)">Escreva para Moara...</span>
+                </div>
+                <textarea
+                    id="input-user"
+                    rows="1"
+                    aria-label="Mensagem para Moara"
+                    spellcheck="false"
+                ></textarea>
+            </div>
             <button id="btn-enviar" onclick="enviarMensagem()" aria-label="Enviar mensagem">
-                <!-- ícone de seta -->
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"
-                     stroke-linecap="round" stroke-linejoin="round">
+                    stroke-linecap="round" stroke-linejoin="round">
                     <line x1="22" y1="2" x2="11" y2="13"/>
                     <polygon points="22 2 15 22 11 13 2 9 22 2"/>
                 </svg>
             </button>
         </div>
-        <p class="hint">Enter para enviar · Shift+Enter para nova linha</p>
+        <p class="hint">Enter para enviar · Shift+Enter para nova linha · Stampdown suportado em tempo real</p>
     </footer>
 
 </body>
 
 <script>
     /* =========================================================
-       REFERÊNCIAS DO DOM
+       MOTOR STAMPDOWN (OUTPUT - GERA BLOCOS REAIS)
+    ========================================================= */
+    function esc(t) {
+        return t.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+    }
+
+    function sdInline(t) {
+        const spans = [];
+        t = t.replace(/`([^`]+)`/g, (_, c) => { spans.push('<code>' + esc(c) + '</code>'); return '\x00C' + (spans.length - 1) + '\x00'; });
+        
+        t = t.replace(/--==([\s\S]*?)==--/g, '<span class="sd-comment">$1</span>');
+        t = t.replace(/\+\+=([\s\S]*?)=\+\+/g, '<span class="sd-note">$1</span>');
+        t = t.replace(/@@([\s\S]*?)@@/g, '<span class="sd-hi">$1</span>');
+        t = t.replace(/(?<!@)@(?!@)([^@\n]+?)(?<!@)@(?!@)/g, '<span class="sd-lo">$1</span>');
+        t = t.replace(/\[ctx:\s*([\s\S]*?)\]/g, '<span class="sd-ctx">ctx: $1</span>');
+        t = t.replace(/\{def:\s*([\s\S]*?)\}/g, '<span class="sd-tag t-def">def</span><span class="sd-body">$1</span>');
+        t = t.replace(/\{ex:\s*([\s\S]*?)\}/g, '<span class="sd-tag t-ex">ex</span><span class="sd-body">$1</span>');
+        t = t.replace(/\{hyp:\s*([\s\S]*?)\}/g, '<span class="sd-tag t-hyp">hyp</span><span class="sd-body">$1</span>');
+        t = t.replace(/<\?\s*([\s\S]*?)\s*\?>/g, '<span class="sd-doubt">$1</span>');
+        t = t.replace(/~~([\s\S]*?)~~/g, '<span class="sd-rev">$1</span>');
+        
+        t = t.replace(/\*\*\*__(.+?)__\*\*\*/g, '<strong><em><span class="sd-ul">$1</span></em></strong>');
+        t = t.replace(/\*\*__(.+?)__\*\*/g, '<strong><span class="sd-ul">$1</span></strong>');
+        t = t.replace(/\*__(.+?)__\*/g, '<em><span class="sd-ul">$1</span></em>');
+        t = t.replace(/\*\*\*(.+?)\*\*\*/g, '<strong><em>$1</em></strong>');
+        t = t.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+        t = t.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g, '<em>$1</em>');
+        t = t.replace(/(?<!_)__([^_]+)__(?!_)/g, '<span class="sd-ul">$1</span>');
+        t = t.replace(/\/\/(.+?)\\\\/g, '<span class="sd-dot">$1</span>');
+        
+        t = t.replace(/!\[([^\]]*)\]\(([^)]+)\)/g, '<img src="$2" alt="$1">');
+        t = t.replace(/\[([^\]]+)\]\(([^)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+        
+        t = t.replace(/\x00C(\d+)\x00/g, (_, i) => spans[+i]);
+        return t;
+    }
+
+    function parseStampdown(src) {
+        const lines = src.split('\n');
+        let out = '', inCode = false, codeLines = [], inTable = false, tableLines = [], listStack = [];
+        
+        function flushList() {
+            while (listStack.length) {
+                const t = listStack.pop();
+                out += t.o ? '</ol>' : '</ul>';
+            }
+        }
+        
+        function flushTable() {
+            if (!inTable) return;
+            inTable = false;
+            let rows = tableLines.filter(l => !/^\|[-| :]+\|$/.test(l.trim()));
+            if (!rows.length) { tableLines = []; return; }
+            out += '<table>';
+            rows.forEach((row, i) => {
+                const cells = row.replace(/^\||\|$/g, '').split('|');
+                const tag = i === 0 ? 'th' : 'td';
+                out += '<tr>' + cells.map(c => `<${tag}>${sdInline(c.trim())}</${tag}>`).join('') + '</tr>';
+            });
+            out += '</table>';
+            tableLines = [];
+        }
+        
+        for (let i = 0; i < lines.length; i++) {
+            const raw = lines[i];
+            
+            if (/^```/.test(raw)) {
+                if (!inCode) { flushList(); flushTable(); inCode = true; codeLines = []; }
+                else { inCode = false; out += `<pre><code>${codeLines.map(esc).join('\n')}</code></pre>`; }
+                continue;
+            }
+            if (inCode) { codeLines.push(raw); continue; }
+            
+            if (/^\|.+\|$/.test(raw.trim())) { flushList(); inTable = true; tableLines.push(raw); continue; }
+            else if (inTable) flushTable();
+            
+            if (/^---+$/.test(raw.trim()) || /^\*\*\*+$/.test(raw.trim())) { flushList(); out += '<hr>'; continue; }
+            
+            if (/^#0 /.test(raw)) { flushList(); out += `<div class="sd-h0">${sdInline(raw.slice(3))}</div>`; continue; }
+            if (/^######## /.test(raw)) { flushList(); out += `<div class="sd-h8">${sdInline(raw.slice(9))}</div>`; continue; }
+            if (/^####### /.test(raw)) { flushList(); out += `<div class="sd-h7">${sdInline(raw.slice(8))}</div>`; continue; }
+            
+            const hm = raw.match(/^(#{1,6}) (.+)/);
+            if (hm) { flushList(); out += `<h${hm[1].length}>${sdInline(hm[2])}</h${hm[1].length}>`; continue; }
+            
+            if (/^> /.test(raw)) { flushList(); out += `<blockquote>${sdInline(raw.slice(2))}</blockquote>`; continue; }
+            
+            const ulm = raw.match(/^(\s*)[-*+] (.+)/);
+            const olm = raw.match(/^(\s*)\d+\. (.+)/);
+            if (ulm || olm) {
+                const indent = (ulm || olm)[1].length, content = ulm ? ulm[2] : olm[2], ordered = !!olm, depth = Math.floor(indent / 2);
+                while (listStack.length > depth + 1) { const t = listStack.pop(); out += t.o ? '</ol>' : '</ul>'; }
+                if (listStack.length <= depth) { out += ordered ? '<ol>' : '<ul>'; listStack.push({ o: ordered }); }
+                out += `<li>${sdInline(content)}</li>`; continue;
+            } else {
+                flushList();
+            }
+            
+            if (!raw.trim()) continue;
+            out += `<p>${sdInline(raw)}</p>`;
+        }
+        
+        flushList();
+        flushTable();
+        if (inCode) out += `<pre><code>${codeLines.map(esc).join('\n')}</code></pre>`;
+        return out;
+    }
+
+    /* =========================================================
+       MOTOR STAMPDOWN (INPUT - PRESERVA CARACTERES E ESTRUTURA)
+    ========================================================= */
+    function parseStampdownForEditor(text) {
+        let t = text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+        t = t.replace(/(--==[\s\S]*?==--)/g, '<span class="sd-comment">$1</span>');
+        t = t.replace(/(\+\+=[\s\S]*?=\+\+)/g, '<span class="sd-note">$1</span>');
+        t = t.replace(/(@@[\s\S]*?@@)/g, '<span class="sd-hi">$1</span>');
+        t = t.replace(/((?<!@)@(?!@)[^@\n]+?(?<!@)@(?!@))/g, '<span class="sd-lo">$1</span>');
+        t = t.replace(/(\[ctx:\s*[\s\S]*?\])/g, '<span class="sd-ctx">$1</span>');
+        t = t.replace(/(\{def:\s*[\s\S]*?\})/g, '<span class="t-def sd-tag">$1</span>');
+        t = t.replace(/(\{ex:\s*[\s\S]*?\})/g, '<span class="t-ex sd-tag">$1</span>');
+        t = t.replace(/(\{hyp:\s*[\s\S]*?\})/g, '<span class="t-hyp sd-tag">$1</span>');
+        t = t.replace(/(<\?\s*[\s\S]*?\s*\?>)/g, '<span class="sd-doubt">$1</span>');
+        t = t.replace(/(~~[\s\S]*?~~)/g, '<span class="sd-rev">$1</span>');
+
+        t = t.replace(/^(#0\s+.*)$/gm, '<span class="sd-h0">$1</span>');
+        t = t.replace(/^(#######\s+.*)$/gm, '<span class="sd-h7">$1</span>');
+        t = t.replace(/^(########\s+.*)$/gm, '<span class="sd-h8">$1</span>');
+        t = t.replace(/^(#{1,6}\s+.*)$/gm, '<strong style="color:var(--verde-claro)">$1</strong>');
+
+        t = t.replace(/(\*\*\*__[\s\S]+?__\*\*\*)/g, '<strong><em><span class="sd-ul">$1</span></em></strong>');
+        t = t.replace(/(\*\*__[\s\S]+?__\*\*)/g, '<strong><span class="sd-ul">$1</span></strong>');
+        t = t.replace(/(\*__[\s\S]+?__\*)/g, '<em><span class="sd-ul">$1</span></em>');
+        t = t.replace(/(\*\*\*[\s\S]+?\*\*\*)/g, '<strong><em>$1</em></strong>');
+        t = t.replace(/(\*\*[\s\S]+?\*\*)/g, '<strong>$1</strong>');
+        t = t.replace(/((?<!\*)\*(?!\*)[\s\S]+?(?<!\*)\*(?!\*))/g, '<em>$1</em>');
+        t = t.replace(/((?<!_)__[^_]+__(?!_))/g, '<span class="sd-ul">$1</span>');
+        t = t.replace(/(\/\/[\s\S]+?\\\\)/g, '<span class="sd-dot">$1</span>');
+
+        t = t.replace(/(`[^`]+`)/g, '<code>$1</code>');
+        t = t.replace(/(```[\s\S]*?```)/g, '<span class="sd-code-block">$1</span>');
+        t = t.replace(/^(>\s+.*)$/gm, '<span class="sd-blockquote">$1</span>');
+
+        /* Preserva quebras de linha vazias nativas no HTML */
+        if (t.endsWith('\n')) {
+            t += ' ';
+        }
+        return t;
+    }
+
+    /* =========================================================
+       DOM E EDITOR OVERLAY LOGIC
     ========================================================= */
     const chatContainer  = document.getElementById('chat-container');
     const inputUser      = document.getElementById('input-user');
+    const highlightLayer = document.getElementById('highlight-layer');
     const btnEnviar      = document.getElementById('btn-enviar');
 
-    /* Histórico e system prompt são gerenciados pelo back-end (MemorySaver + systemprompt.txt) */
+    function updateEditor() {
+        const text = inputUser.value;
+        
+        if (!text) {
+            highlightLayer.innerHTML = '<span style="color: var(--text-muted)">Escreva para Moara...</span>';
+        } else {
+            highlightLayer.innerHTML = parseStampdownForEditor(text);
+        }
 
-    /* =========================================================
-       AUTO-RESIZE DO TEXTAREA
-    ========================================================= */
-    inputUser.addEventListener('input', () => {
+        /* Auto-resize com sincronização */
         inputUser.style.height = 'auto';
-        inputUser.style.height = inputUser.scrollHeight + 'px';
+        highlightLayer.style.height = 'auto';
+        const scrollH = inputUser.scrollHeight;
+        inputUser.style.height = scrollH + 'px';
+        highlightLayer.style.height = scrollH + 'px';
+    }
+
+    inputUser.addEventListener('input', updateEditor);
+    
+    inputUser.addEventListener('scroll', () => {
+        highlightLayer.scrollTop = inputUser.scrollTop;
+        highlightLayer.scrollLeft = inputUser.scrollLeft;
     });
 
-    /* =========================================================
-       ATALHO: Enter envia, Shift+Enter quebra linha
-    ========================================================= */
     inputUser.addEventListener('keydown', (e) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault();
@@ -366,28 +618,18 @@
     /* =========================================================
        HELPERS DE UI
     ========================================================= */
-
-    /** Rola o chat para a última mensagem */
     function rolarParaBaixo() {
         chatContainer.scrollTo({ top: chatContainer.scrollHeight, behavior: 'smooth' });
     }
 
-    /** Retorna hora formatada HH:MM */
     function horaAtual() {
         return new Date().toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
     }
 
-    /**
-     * Adiciona uma mensagem de balão no chat.
-     * @param {string} texto - Conteúdo da mensagem
-     * @param {'ia'|'usuario'} tipo - Quem enviou
-     * @returns {HTMLElement} - O elemento .balao (para editar depois, ex: loading)
-     */
     function adicionarMensagem(texto, tipo) {
         const wrapper = document.createElement('div');
         wrapper.classList.add('mensagem', tipo);
 
-        // avatar só para a IA
         if (tipo === 'ia') {
             const avatar = document.createElement('div');
             avatar.className = 'avatar';
@@ -399,8 +641,8 @@
         col.style.flexDirection = 'column';
 
         const balao = document.createElement('div');
-        balao.className = 'balao';
-        balao.innerText = texto;
+        balao.className = 'balao sd-content';
+        balao.innerHTML = parseStampdown(texto);
 
         const ts = document.createElement('span');
         ts.className = 'timestamp';
@@ -415,10 +657,6 @@
         return balao;
     }
 
-    /**
-     * Mostra os pontinhos de "digitando..."
-     * @returns {{ el: HTMLElement, remover: Function }}
-     */
     function mostrarDigitando() {
         const wrapper = document.createElement('div');
         wrapper.classList.add('mensagem', 'ia', 'digitando');
@@ -441,7 +679,6 @@
         };
     }
 
-    /** Exibe uma mensagem de sistema (ex: erro, aviso) */
     function adicionarMsgSistema(texto) {
         const el = document.createElement('div');
         el.className = 'msg-sistema';
@@ -455,25 +692,21 @@
     ========================================================= */
     async function enviarMensagem() {
         const texto = inputUser.value.trim();
-        if (!texto) return; // ignora vazio
+        if (!texto) return;
 
-        /* Bloqueia input enquanto aguarda resposta */
         btnEnviar.disabled = true;
         inputUser.disabled = true;
 
-        /* Mostra a mensagem do usuário */
         adicionarMensagem(texto, 'usuario');
 
-        /* Limpa o campo de input */
+        /* Limpa o campo e atualiza o overlay */
         inputUser.value = '';
-        inputUser.style.height = 'auto';
+        updateEditor();
 
-        /* Exibe pontinhos enquanto a IA "pensa" */
         const digitando = mostrarDigitando();
 
         try {
-            /* POST /iaTerminal — o back-end cuida do histórico (MemorySaver) e do system prompt */
-            const response = await fetch('http://127.0.0.1:8000/iaOutGame', {
+            const response = await fetch('[http://127.0.0.1:8000/iaOutGame](http://127.0.0.1:8000/iaOutGame)', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_prompt: texto })
@@ -483,30 +716,17 @@
 
             const data = await response.json();
 
-            /* Remove pontinhos e exibe resposta */
             digitando.remover();
             adicionarMensagem(data.retorno, 'ia');
 
         } catch (erro) {
-            /* Remove pontinhos e mostra erro */
             digitando.remover();
             adicionarMsgSistema('Sem API · ' + erro.message);
         }
 
-        /* Libera o input de volta */
         btnEnviar.disabled = false;
         inputUser.disabled = false;
         inputUser.focus();
     }
-
-    /* =========================================================
-       MENSAGEM INICIAL DA MOARA (opcional — simula boas-vindas)
-    ========================================================= */
-    window.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-            adicionarMensagem('Estou aqui.', 'ia');
-        }, 600);
-    });
 </script>
-
 </html>
