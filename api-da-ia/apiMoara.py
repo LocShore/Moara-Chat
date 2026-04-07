@@ -6,6 +6,8 @@ from MoaraIA import MoaraIA
 app = FastAPI()
 moara = MoaraIA()
 
+# Para rodar, por enquanto: python -m uvicorn apiMoara:app --reload
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"], # Local do servidor que vai usar
