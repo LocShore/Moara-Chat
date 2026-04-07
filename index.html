@@ -706,7 +706,7 @@
         const digitando = mostrarDigitando();
 
         try {
-            const response = await fetch('[http://127.0.0.1:8000/iaOutGame](http://127.0.0.1:8000/iaOutGame)', {
+            const response = await fetch('http://127.0.0.1:8000/iaOutGame', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({ user_prompt: texto })

@@ -10,7 +10,7 @@ moara = MoaraIA()
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Local do servidor que vai usar
+    allow_origins=["http://127.0.0.1:5501"], # Local do servidor que vai usar
     allow_methods=["POST"], # metodo (get: apenas pega informação, post: tras e leva informação)
     allow_headers=["Content-Type"], # header do negocio (tipo de classe que define o tipo)
 )
